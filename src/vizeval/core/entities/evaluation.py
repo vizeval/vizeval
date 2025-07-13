@@ -1,4 +1,4 @@
-from dataclasses import dataclass   
+from dataclasses import dataclass, field
 from typing import Optional, Dict, Any
 
 
@@ -11,4 +11,4 @@ class Evaluation:
     evaluator: str
     score: Optional[float] = None
     feedback: Optional[str] = None
-    metadata: Dict[str, Any] = {}
+    metadata: Dict[str, Any] = field(default_factory=dict)

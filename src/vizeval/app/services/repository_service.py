@@ -21,12 +21,12 @@ class RepositoryService:
         Raises:
             ValueError: If the API key is invalid or no user is found
         """
-        user_id = self.repository.get_user_from_api_key(api_key)
+        user = self.repository.get_user_from_api_key(api_key)
         
-        if not user_id:
+        if not user:
             raise ValueError("Invalid API key")
             
-        return self.repository.list_evaluations(user_id=user_id)
+        return self.repository.list_evaluations(user_id=user.id)
 
     def add_user(self, user: User) -> str:
         """

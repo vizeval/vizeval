@@ -16,8 +16,10 @@ class EvaluateRequest:
         return Evaluation(
             system_prompt=request.system_prompt,
             user_prompt=request.user_prompt,
-            model_response=request.model_response,
-            evaluator_name=request.evaluator_name,
+            response=request.response,
+            evaluator=request.evaluator,
+            user_id=request.user_id,
             metadata=request.metadata,
-            evaluation_result=result
+            score=result.score,
+            feedback=result.feedback
         )

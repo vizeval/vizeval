@@ -14,7 +14,4 @@ def get_evaluator(name: str) -> BaseEvaluator:
     """Retrieve evaluator instance by name, defaulting to dummy evaluator."""
     return _evaluators.get(name, _evaluators[DummyEvaluator.name])
 
-
-def register_evaluator(evaluator: BaseEvaluator):
-    """Register a custom evaluator instance at runtime."""
-    _evaluators[evaluator.name] = evaluator 
+print("AVAILABLE EVALUATORS:", _evaluators.keys())

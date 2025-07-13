@@ -1,23 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from typing import List
 
 from vizeval.app.api.schemas.user import UserCreate, UserResponse
 from vizeval.app.services.repository_service import RepositoryService
 from vizeval.app.api.schemas.evaluation import Evaluation
-from vizeval.core.entities import Evaluation as CoreEvaluation
 from vizeval.core.entities import User as CoreUser
+from vizeval.app.services.service_provider import get_repository_service
 
 router = APIRouter(prefix="/user", tags=["user"])
-
-_repository = None  # Should be an instance of VizevalRepository
-
-def get_repository_service() -> RepositoryService:
-    if not _repository:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Repository service not properly initialized"
-        )
-    return RepositoryService(_repository)
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
@@ -25,10 +15,10 @@ async def create_user(
     repository_service: RepositoryService = Depends(get_repository_service)
 ):
     """Create a new user and return their API key."""
-    created_user = repository_service.add_user(CoreUser(name=user.name))
+    user_api_key = repository_service.add_user(CoreUser(name=user.name))
     return UserResponse(
-        name=created_user.name,
-        api_key=created_user.api_key,
+        name=user.name,
+        api_key=user_api_key,
     )
 
 @router.get("/evaluations", response_model=List[Evaluation])

@@ -9,3 +9,4 @@ class EvaluationRequest:
     metadata: Optional[Dict[str, str]] = None
     evaluator: str = "dummy"
     async_mode: bool = False
+    user_id: str = ""
