@@ -7,5 +7,10 @@ class Evaluator(ABC):
     name: str = "base"
 
     @abstractmethod
-    def evaluate(self, request: EvaluationRequest) -> EvaluationResult:
+    def fast_evaluate(self, request: EvaluationRequest) -> EvaluationResult:
         raise NotImplementedError
+
+    @abstractmethod
+    def detailed_evaluate(self, request: EvaluationRequest) -> EvaluationResult:
+        raise NotImplementedError
+    

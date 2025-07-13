@@ -9,7 +9,6 @@ class EvaluationRequest(BaseModel):
     evaluator: str
     metadata: Dict[str, Any] = Field(default_factory=dict)
     api_key: str
-    async_mode: bool = False
 
 class EvaluationResponse(BaseModel):
     evaluator: str

@@ -27,18 +27,9 @@ async def create_evaluation(
         response=request.response,
         evaluator=request.evaluator,
         metadata=request.metadata,
-        async_mode=request.async_mode
     )
-    
-    if request.async_mode:
-        result = evaluation_service.evaluate_async(core_request)
-        return EvaluationResponse(
-            evaluator=core_request.evaluator,
-            score=result.score,
-            feedback=result.feedback
-        )
-    
-    result = evaluation_service.evaluate_sync(core_request)
+
+    result = evaluation_service.evaluate(core_request)
     
     return EvaluationResponse(
         evaluator=core_request.evaluator,

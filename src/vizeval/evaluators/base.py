@@ -9,6 +9,11 @@ class BaseEvaluator(ABC):
     name: str = "base"
 
     @abstractmethod
-    def evaluate(self, request: EvaluationRequest) -> EvaluationResult:
+    def fast_evaluate(self, request: EvaluationRequest) -> EvaluationResult:
         """Return evaluation result as a dictionary."""
-        raise NotImplementedError 
+        raise NotImplementedError
+
+    def detailed_evaluate(self, request: EvaluationRequest) -> EvaluationResult:
+        """Return evaluation result as a dictionary."""
+        raise NotImplementedError
+    

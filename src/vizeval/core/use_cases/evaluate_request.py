@@ -6,13 +6,21 @@ class EvaluateRequest:
         self.evaluator = evaluator
         self.repository = repository
     
-    def execute(self, request: EvaluationRequest) -> EvaluationResult:
-        evaluation_result = self.evaluator.evaluate(request)
-        evaluation = self._build_evaluation(request, evaluation_result)
-        self.repository.store_evaluation(evaluation)
+    def execute_fast_eval(self, request: EvaluationRequest) -> EvaluationResult:
+        evaluation_result = self.evaluator.fast_evaluate(request)
         return evaluation_result
 
-    def _build_evaluation(self, request: EvaluationRequest, result: EvaluationResult) -> Evaluation:
+    def execute_detailed_eval(self, request: EvaluationRequest) -> EvaluationResult:
+        fast_evaluation_result = self.evaluator.fast_evaluate(request)
+        detailed_evaluation_result = self.evaluator.detailed_evaluate(request)
+
+        evaluation = self._build_evaluation(request, detailed_evaluation_result, fast_evaluation_result)
+        self.repository.store_evaluation(evaluation)
+        return detailed_evaluation_result
+
+    def _build_evaluation(self, request: EvaluationRequest, 
+                            detailed_eval_result: EvaluationResult,
+                            fast_eval_result: EvaluationResult) -> Evaluation:
         return Evaluation(
             system_prompt=request.system_prompt,
             user_prompt=request.user_prompt,
@@ -20,6 +28,6 @@ class EvaluateRequest:
             evaluator=request.evaluator,
             user_id=request.user_id,
             metadata=request.metadata,
-            score=result.score,
-            feedback=result.feedback
+            score=fast_eval_result.score,
+            feedback=detailed_eval_result.feedback
         )

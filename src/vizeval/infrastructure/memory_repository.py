@@ -17,9 +17,8 @@ class MemoryRepository(VizevalRepository):
             evaluation.id = str(uuid.uuid4())
         
         self.evaluations[evaluation.id] = evaluation
+        self.user_evaluations[evaluation.user_id].append(evaluation.id)
         
-        if evaluation.user_id and evaluation.user_id in self.user_evaluations:
-            self.user_evaluations[evaluation.user_id].append(evaluation.id)
         return evaluation.id
     
     def get_evaluation(self, evaluation_id: str) -> Optional[Evaluation]:
@@ -28,6 +27,7 @@ class MemoryRepository(VizevalRepository):
     
     def list_evaluations(self, user_id: str, limit: int = 100, offset: int = 0) -> List[Evaluation]:
         """List evaluations with pagination"""
+        print(f"Listing evaluations for user {user_id}", self.user_evaluations, self.evaluations)
         evaluation_ids = self.user_evaluations.get(user_id, [])
         paginated_ids = evaluation_ids[offset:offset + limit]
         return [self.evaluations[eval_id] for eval_id in paginated_ids if eval_id in self.evaluations]

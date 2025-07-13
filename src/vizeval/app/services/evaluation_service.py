@@ -1,5 +1,4 @@
 import time
-import signal
 
 from vizeval.core.use_cases import EvaluateRequest
 from vizeval.core.interfaces import VizevalRepository, Evaluator, EvaluationQueue
@@ -13,15 +12,12 @@ class EvaluationService:
         self.queue = queue
         self._running = False
         
-    def evaluate_sync(self, request: EvaluationRequest) -> EvaluationResult:
+    def evaluate(self, request: EvaluationRequest) -> EvaluationResult:
         evaluator = get_evaluator(request.evaluator)
         evaluate_request = EvaluateRequest(evaluator, self.repository)
-        return evaluate_request.execute(request)
-        
-    def evaluate_async(self, request: EvaluationRequest) -> EvaluationResult:
-        """Add a request to the queue for asynchronous processing."""
         self.queue.enqueue(request)
-        return EvaluationResult(score=None, feedback=None, evaluator=request.evaluator)
+
+        return evaluate_request.execute_fast_eval(request)
     
     def start_worker(self, poll_interval: float = 5.0) -> None:
         """Start the worker to continuously process queued evaluation requests.
@@ -30,14 +26,9 @@ class EvaluationService:
             poll_interval: Time in seconds to wait between checking the queue when empty.
         """
         self._running = True
-        print("Worker started. Press Ctrl+C to stop.")
+        print("Evaluation worker started.")
         
-        # Handle graceful shutdown on SIGINT (Ctrl+C)
-        def signal_handler(signum, frame):
-            print("\nShutting down worker...")
-            self._running = False
-        
-        signal.signal(signal.SIGINT, signal_handler)
+        # We don't use signal handlers in threads as they only work in the main thread
         
         while self._running:
             try:
@@ -49,17 +40,18 @@ class EvaluationService:
                 request = self.queue.dequeue()
                 try:
                     # Process the request synchronously
-                    result = self.evaluate_sync(request)
-                    print(f"Processed evaluation request. Result score: {result.score}")
+                    evaluator = get_evaluator(request.evaluator)
+                    evaluate_request = EvaluateRequest(evaluator, self.repository)
+                    result = evaluate_request.execute_detailed_eval(request)
+                    print(f"Processed evaluation request in background thread. Result Feedback: {result.feedback}")
+
                 except Exception as e:
                     print(f"Error processing evaluation request: {str(e)}")
             
-            except KeyboardInterrupt:
-                self._running = False
-                print("\nWorker stopped by user.")
-
             except Exception as e:
                 print(f"Unexpected error in worker: {str(e)}")
+                
+        print("Evaluation worker stopped.")
     
     def stop_worker(self) -> None:
         """Stop the worker on the next iteration."""

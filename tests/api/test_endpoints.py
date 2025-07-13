@@ -56,7 +56,6 @@ class TestApiEndpoints:
             "response": "Python is a programming language.",
             "evaluator": "dummy",
             "api_key": "mock-api-key",
-            "async_mode": False
         }
         
         response = requests.post(url, json=payload)
