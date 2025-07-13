@@ -1,47 +1,38 @@
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional, Any
 import uuid
 
 from vizeval.core.interfaces.vizeval_repository import VizevalRepository
-from vizeval.core.entities import User, Evaluation
+from vizeval.core.entities import Evaluation, User
 
 
 class MemoryRepository(VizevalRepository):
     def __init__(self):
-        self.users = {}  # api_key -> User
-        self.evaluations = {}  # id -> Evaluation
-        self.user_evaluations = {}  # user_id -> List[evaluation_id]
+        self.evaluations: Dict[str, Evaluation] = {}
+        self.users: Dict[str, User] = {}
+        self.api_keys: Dict[str, str] = {}
     
     def store_evaluation(self, evaluation: Evaluation) -> str:
-        """Store an evaluation and return its ID"""
-        if not hasattr(evaluation, 'id') or not evaluation.id:
-            evaluation.id = str(uuid.uuid4())
-        
-        self.evaluations[evaluation.id] = evaluation
-        self.user_evaluations[evaluation.user_id].append(evaluation.id)
-        
-        return evaluation.id
-    
-    def get_evaluation(self, evaluation_id: str) -> Optional[Evaluation]:
-        """Get an evaluation by ID"""
-        return self.evaluations.get(evaluation_id)
+        evaluation_id = str(uuid.uuid4())
+        self.evaluations[evaluation_id] = evaluation
+        print("CURRENT EVALUATIONS: ", self.evaluations)
+        return evaluation_id
     
     def list_evaluations(self, user_id: str, limit: int = 100, offset: int = 0) -> List[Evaluation]:
-        """List evaluations with pagination"""
-        print(f"Listing evaluations for user {user_id}", self.user_evaluations, self.evaluations)
-        evaluation_ids = self.user_evaluations.get(user_id, [])
-        paginated_ids = evaluation_ids[offset:offset + limit]
-        return [self.evaluations[eval_id] for eval_id in paginated_ids if eval_id in self.evaluations]
+        user_evaluations = [eval for eval in self.evaluations.values() if eval.user_id == user_id]
+        return user_evaluations[offset:offset + limit]
     
     def get_user_from_api_key(self, api_key: str) -> Optional[User]:
-        """Get a user by API key"""
-        return self.users.get(api_key)
+        user_id = self.api_keys.get(api_key)
+        return self.users.get(user_id)
     
     def add_user(self, user: User) -> str:
-        """Add a new user and return its API key"""
-        if not user.api_key:
-            user.api_key = str(uuid.uuid4())
+        user_id = "mock-user-id"
+        api_key = "mock-api-key"
         
-        self.users[user.api_key] = user
-        self.user_evaluations[user.id] = []
+        user.id = user_id
+        user.api_key = api_key
         
-        return user.api_key
+        self.users[user_id] = user
+        self.api_keys[api_key] = user_id
+        
+        return api_key

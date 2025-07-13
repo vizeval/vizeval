@@ -8,4 +8,4 @@ class EvaluationRequest:
     response: str
     metadata: Optional[Dict[str, str]] = None
     evaluator: str = "dummy"
-    user_id: str = ""
+    user_id: str = "mock-user-id"

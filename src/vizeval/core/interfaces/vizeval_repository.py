@@ -10,17 +10,12 @@ class VizevalRepository(ABC):
         pass
 
     @abstractmethod
-    def get_evaluation(self, evaluation_id: str) -> Optional[Evaluation]:
-        """Get an evaluation by ID"""
-        pass
-
-    @abstractmethod
     def list_evaluations(self, user_id: str, limit: int = 100, offset: int = 0) -> List[Evaluation]:
-        """List evaluations with pagination"""
+        """List evaluations for a user with pagination"""
         pass
 
     @abstractmethod
-    def get_user_from_api_key(self, api_key: str) -> Optional[str]:
+    def get_user_from_api_key(self, api_key: str) -> Optional[User]:
         """Get a user by API key"""
         pass
         
@@ -28,4 +23,3 @@ class VizevalRepository(ABC):
     def add_user(self, user: User) -> str:
         """Add a new user and return its API key"""
         pass
-        
