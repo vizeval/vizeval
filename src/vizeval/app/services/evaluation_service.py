@@ -21,7 +21,7 @@ class EvaluationService:
     def evaluate_async(self, request: EvaluationRequest) -> EvaluationResult:
         """Add a request to the queue for asynchronous processing."""
         self.queue.enqueue(request)
-        return EvaluationResult(score=None, feedback=None)
+        return EvaluationResult(score=None, feedback=None, evaluator=request.evaluator)
     
     def start_worker(self, poll_interval: float = 5.0) -> None:
         """Start the worker to continuously process queued evaluation requests.

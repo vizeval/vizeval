@@ -20,7 +20,6 @@ class MemoryRepository(VizevalRepository):
         
         if evaluation.user_id and evaluation.user_id in self.user_evaluations:
             self.user_evaluations[evaluation.user_id].append(evaluation.id)
-        
         return evaluation.id
     
     def get_evaluation(self, evaluation_id: str) -> Optional[Evaluation]:

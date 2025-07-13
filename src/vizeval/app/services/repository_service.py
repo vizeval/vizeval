@@ -42,3 +42,18 @@ class RepositoryService:
             ValueError: If the user already exists
         """
         return self.repository.add_user(user)
+
+    def get_user_from_api_key(self, api_key: str) -> User:
+        """
+        Retrieve a user by their API key.
+        
+        Args:
+            api_key: The API key to fetch the user for
+            
+        Returns:
+            Optional[User]: The user associated with the API key, or None if not found
+        """
+        try:
+            return self.repository.get_user_from_api_key(api_key)
+        except ValueError as e:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
