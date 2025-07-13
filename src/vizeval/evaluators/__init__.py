@@ -2,11 +2,13 @@ from typing import Dict
 
 from .dummy import DummyEvaluator
 from .juridical import JuridicalEvaluator
+from .medical import MedicalEvaluator
 from .base import BaseEvaluator
 
 _evaluators: Dict[str, BaseEvaluator] = {
     DummyEvaluator.name: DummyEvaluator(),
     JuridicalEvaluator.name: JuridicalEvaluator(),
+    MedicalEvaluator.name: MedicalEvaluator(),
 }
 
 
