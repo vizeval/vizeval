@@ -4,22 +4,24 @@ import signal
 from vizeval.core.use_cases import EvaluateRequest
 from vizeval.core.interfaces import VizevalRepository, Evaluator, EvaluationQueue
 from vizeval.core.entities import EvaluationResult, EvaluationRequest
+from vizeval.evaluators import get_evaluator
 
 
 class EvaluationService:
-    def __init__(self, evaluator: Evaluator, repository: VizevalRepository, queue: EvaluationQueue):
-        self.evaluator = evaluator
+    def __init__(self, repository: VizevalRepository, queue: EvaluationQueue):
         self.repository = repository
         self.queue = queue
         self._running = False
         
     def evaluate_sync(self, request: EvaluationRequest) -> EvaluationResult:
-        evaluate_request = EvaluateRequest(self.evaluator, self.repository)
+        evaluator = get_evaluator(request.evaluator)
+        evaluate_request = EvaluateRequest(evaluator, self.repository)
         return evaluate_request.execute(request)
         
-    def evaluate_async(self, request: EvaluationRequest) -> None:
+    def evaluate_async(self, request: EvaluationRequest) -> EvaluationResult:
         """Add a request to the queue for asynchronous processing."""
         self.queue.enqueue(request)
+        return EvaluationResult(score=None, feedback=None)
     
     def start_worker(self, poll_interval: float = 5.0) -> None:
         """Start the worker to continuously process queued evaluation requests.
