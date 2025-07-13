@@ -1,0 +1,1 @@
+from .fastval import FastvalModel

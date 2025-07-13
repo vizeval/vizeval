@@ -1,14 +1,13 @@
 from typing import Dict
 
 from .dummy import DummyEvaluator
-from .juridical import JuridicalEvaluator
-from .medical import MedicalEvaluator
 from .base import BaseEvaluator
+from .medical_temp import MedicalEvaluator as MedicalEvaluatorTemp
+# from .medical import MedicalEvaluator # Thats our real evaluator
 
 _evaluators: Dict[str, BaseEvaluator] = {
     DummyEvaluator.name: DummyEvaluator(),
-    JuridicalEvaluator.name: JuridicalEvaluator(),
-    MedicalEvaluator.name: MedicalEvaluator(),
+    MedicalEvaluatorTemp.name: MedicalEvaluatorTemp(),
 }
 
 

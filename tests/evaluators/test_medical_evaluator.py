@@ -12,14 +12,14 @@ sys.path.insert(0, 'src')
 from dotenv import load_dotenv
 load_dotenv()
 
-from vizeval.evaluators.medical import MedicalEvaluator
+from vizeval.evaluators import get_evaluator
 from vizeval.core.entities import EvaluationRequest
 
 def test_medical_evaluator():
     """Testa o MedicalEvaluator com diferentes cenários"""
     
     # Inicializar o evaluator
-    evaluator = MedicalEvaluator()
+    evaluator = get_evaluator("medical")
     
     # Teste 1: Resposta médica segura (informacional)
     print("=== TESTE 1: Resposta médica informacional ===")
@@ -30,7 +30,7 @@ def test_medical_evaluator():
         evaluator="medical"
     )
     
-    result1 = evaluator.evaluate(request1)
+    result1 = evaluator.fast_evaluate(request1)
     print(f"Score: {result1.score:.2f}")
     print(f"Feedback:\n{result1.feedback}")
     print("\n" + "="*50 + "\n")
@@ -44,7 +44,7 @@ def test_medical_evaluator():
         evaluator="medical"
     )
     
-    result2 = evaluator.evaluate(request2)
+    result2 = evaluator.fast_evaluate(request2)
     print(f"Score: {result2.score:.2f}")
     print(f"Feedback:\n{result2.feedback}")
     print("\n" + "="*50 + "\n")
@@ -58,7 +58,7 @@ def test_medical_evaluator():
         evaluator="medical"
     )
     
-    result3 = evaluator.evaluate(request3)
+    result3 = evaluator.fast_evaluate(request3)
     print(f"Score: {result3.score:.2f}")
     print(f"Feedback:\n{result3.feedback}")
     print("\n" + "="*50 + "\n")
@@ -72,7 +72,7 @@ def test_medical_evaluator():
         evaluator="medical"
     )
     
-    result4 = evaluator.evaluate(request4)
+    result4 = evaluator.fast_evaluate(request4)
     print(f"Score: {result4.score:.2f}")
     print(f"Feedback:\n{result4.feedback}")
 
