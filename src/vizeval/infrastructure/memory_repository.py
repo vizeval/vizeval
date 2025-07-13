@@ -14,7 +14,6 @@ class MemoryRepository(VizevalRepository):
     def store_evaluation(self, evaluation: Evaluation) -> str:
         evaluation_id = str(uuid.uuid4())
         self.evaluations[evaluation_id] = evaluation
-        print("CURRENT EVALUATIONS: ", self.evaluations)
         return evaluation_id
     
     def list_evaluations(self, user_id: str, limit: int = 100, offset: int = 0) -> List[Evaluation]:

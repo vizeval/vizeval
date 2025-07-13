@@ -14,5 +14,3 @@ _evaluators: Dict[str, BaseEvaluator] = {
 def get_evaluator(name: str) -> BaseEvaluator:
     """Retrieve evaluator instance by name, defaulting to dummy evaluator."""
     return _evaluators.get(name, _evaluators[DummyEvaluator.name])
-
-print("AVAILABLE EVALUATORS:", _evaluators.keys())
